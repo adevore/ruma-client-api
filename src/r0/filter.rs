@@ -18,7 +18,7 @@ pub enum EventFormat {
 }
 
 /// Filters to be applied to room events
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct RoomEventFilter {
     /// A list of event types to exclude.
     ///
@@ -60,8 +60,18 @@ pub struct RoomEventFilter {
     pub types: Option<Vec<String>>,
 }
 
+impl RoomEventFilter {
+    /// A filter that can be used to ignore all room events
+    pub fn ignore_all() -> Self {
+        Self {
+            types: Some(vec![]),
+            ..Default::default()
+        }
+    }
+}
+
 /// Filters to be applied to room data
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct RoomFilter {
     /// Include rooms that the user has left in the sync.
     ///
@@ -96,8 +106,18 @@ pub struct RoomFilter {
     pub rooms: Option<Vec<RoomId>>,
 }
 
+impl RoomFilter {
+    /// A filter that can be used to ignore all room events (of any type)
+    pub fn ignore_all() -> Self {
+        Self {
+            rooms: Some(vec![]),
+            ..Default::default()
+        }
+    }
+}
+
 /// Filter for not-room data
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Filter {
     /// A list of event types to exclude.
     ///
@@ -128,8 +148,18 @@ pub struct Filter {
     pub not_senders: Vec<UserId>,
 }
 
+impl Filter {
+    /// A filter that can be used to ignore all events
+    pub fn ignore_all() -> Self {
+        Self {
+            types: Some(vec![]),
+            ..Default::default()
+        }
+    }
+}
+
 /// A filter definition
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FilterDefinition {
     /// List of event fields to include.
     ///
@@ -142,7 +172,7 @@ pub struct FilterDefinition {
     /// The format to use for events.
     ///
     /// 'client' will return the events in a format suitable for clients. 'federation' will return
-    /// the raw event as receieved over federation. The default is 'client'.
+    /// the raw event as received over federation. The default is 'client'.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub event_format: Option<EventFormat>,
     /// The user account data that isn't associated with rooms to include.
@@ -154,4 +184,16 @@ pub struct FilterDefinition {
     /// The presence updates to include.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub presence: Option<Filter>,
+}
+
+impl FilterDefinition {
+    /// A filter that can be used to ignore all events
+    pub fn ignore_all() -> Self {
+        Self {
+            account_data: Some(Filter::ignore_all()),
+            room: Some(RoomFilter::ignore_all()),
+            presence: Some(Filter::ignore_all()),
+            ..Default::default()
+        }
+    }
 }
