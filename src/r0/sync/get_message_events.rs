@@ -5,6 +5,7 @@ use ruma_api::ruma_api;
 use ruma_events::{collections::only, EventResult};
 use ruma_identifiers::RoomId;
 use serde::{Deserialize, Serialize};
+use crate::r0::filter::RoomEventFilter;
 
 ruma_api! {
     metadata {
@@ -44,6 +45,10 @@ ruma_api! {
         #[serde(skip_serializing_if = "Option::is_none")]
         #[ruma_api(query)]
         pub limit: Option<UInt>,
+        /// A RoomEventFilter to filter returned events with.
+        #[serde(skip_serializing_if = "Option::is_none")]
+        #[ruma_api(query)]
+        pub filter: Option<RoomEventFilter>,
     }
 
     response {
