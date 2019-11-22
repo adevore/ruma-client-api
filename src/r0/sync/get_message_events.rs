@@ -5,6 +5,7 @@ use ruma_api::ruma_api;
 use ruma_events::{collections::only, EventResult};
 use ruma_identifiers::RoomId;
 use serde::{Deserialize, Serialize};
+
 use crate::r0::filter::RoomEventFilter;
 
 ruma_api! {
